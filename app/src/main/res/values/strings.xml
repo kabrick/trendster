@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Trendster</string>
+    <string name="verify_phone_title">Verify your phone number</string>
+    <string name="verify_phone_text">Trendster will send an SMS message to verify your phone number. Enter your country code and phone number</string>
 </resources>
