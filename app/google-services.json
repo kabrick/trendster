@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "213913177040-tbh4hrc8v7j7d19elhgl6ptnpq37pfdb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kabricks.trendster",
+            "certificate_hash": "9ea5dcefe252fedfae27058712dfef2296803351"
+          }
+        },
+        {
           "client_id": "213913177040-uakh6qgvq58n2cpuf1rl5n059v9ede2h.apps.googleusercontent.com",
           "client_type": 3
         }
