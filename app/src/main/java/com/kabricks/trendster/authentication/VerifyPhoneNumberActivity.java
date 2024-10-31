@@ -7,14 +7,21 @@ import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.kabricks.trendster.R;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class VerifyPhoneNumberActivity extends AppCompatActivity {
 
@@ -22,6 +29,7 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
     Map<String, String> country_codes_map = new HashMap<>();
     TextView user_country;
     EditText user_country_code, user_phone_number;
+    String phoneNumber = "+";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,5 +61,43 @@ public class VerifyPhoneNumberActivity extends AppCompatActivity {
         Locale locale = new Locale("", tm.getSimCountryIso());
         user_country.setText(locale.getDisplayCountry());
         user_country_code.setText(country_codes_map.get(locale.getCountry()));
+
+        phoneNumber += country_codes_map.get(locale.getCountry());
     }
+
+    public void verifyUser(View view){
+
+        phoneNumber += user_phone_number.getText().toString();
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                mCallbacks);        // OnVerificationStateChangedCallbacks
+    }
+
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+
+            //Getting the code sent by SMS
+            String code = phoneAuthCredential.getSmsCode();
+
+            if (code != null) {
+                Log.e("code", code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            Toast.makeText(VerifyPhoneNumberActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            //storing the verification id that is sent to the user
+            Log.e("verification_id", verificationId);
+        }
+    };
 }
